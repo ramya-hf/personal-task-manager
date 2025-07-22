@@ -23,6 +23,33 @@
         {% endfor %}
     {% endif %}
 
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="{{ filter_form.status.id_for_label }}" class="form-label">Status</label>
+                    {{ filter_form.status }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ filter_form.priority.id_for_label }}" class="form-label">Priority</label>
+                    {{ filter_form.priority }}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ filter_form.category.id_for_label }}" class="form-label">Category</label>
+                    {{ filter_form.category }}
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <a href="{% url 'tasks:task_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {% if tasks %}
         <div class="row">
             {% for task in tasks %}
@@ -56,7 +83,11 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            No tasks yet. <a href="{% url 'tasks:task_create' %}" class="alert-link">Create your first task</a>!
+            {% if request.GET %}
+                No tasks match the selected filters. <a href="{% url 'tasks:task_list' %}" class="alert-link">Clear filters</a>
+            {% else %}
+                No tasks yet. <a href="{% url 'tasks:task_create' %}" class="alert-link">Create your first task</a>!
+            {% endif %}
         </div>
     {% endif %}
 </div>
