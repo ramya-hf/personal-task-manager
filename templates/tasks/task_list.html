@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>My Tasks</h1>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'tasks:task_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Task
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if tasks %}
+        <div class="row">
+            {% for task in tasks %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 {% if task.is_past_due and not task.completed %}border-danger{% endif %}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge bg-{{ task.priority|yesno:'danger,warning,info' }}">
+                                {{ task.get_priority_display }}
+                            </span>
+                            {% if task.completed %}
+                                <span class="badge bg-success">Completed</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ task.title }}</h5>
+                            <p class="card-text">{{ task.description|truncatewords:30 }}</p>
+                            {% if task.category %}
+                                <span class="badge bg-secondary">{{ task.category }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-muted">
+                            {% if task.due_date %}
+                                <small>Due: {{ task.due_date|date:"M d, Y H:i" }}</small>
+                            {% else %}
+                                <small>No due date</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No tasks yet. <a href="{% url 'tasks:task_create' %}" class="alert-link">Create your first task</a>!
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
