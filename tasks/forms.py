@@ -39,3 +39,30 @@ class TaskForm(forms.ModelForm):
         if due_date and due_date < timezone.now():
             raise forms.ValidationError("Due date cannot be in the past")
         return due_date 
+
+class TaskFilterForm(forms.Form):
+    STATUS_CHOICES = [
+        ('', 'All'),
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+    ]
+    
+    PRIORITY_CHOICES = [('', 'All')] + Task.PRIORITY_CHOICES
+    
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    priority = forms.ChoiceField(
+        choices=PRIORITY_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    category = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Filter by category'
+        })
+    ) 
